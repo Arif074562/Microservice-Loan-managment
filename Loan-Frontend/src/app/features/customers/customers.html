@@ -1,0 +1,100 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div>
+      <h2 class="page-title">Customers</h2>
+      <p class="page-subtitle">Manage customer profiles and KYC data</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreate()">
+      <i class="fa-solid fa-plus me-2"></i>Add Customer
+    </button>
+  </div>
+
+  <div class="alert alert-success fade-in" *ngIf="success">
+    <i class="fa-solid fa-circle-check me-2"></i>{{ success }}
+  </div>
+
+  <div class="card p-0">
+    <div class="table-toolbar">
+      <span class="record-count">{{ totalElements }} customers</span>
+    </div>
+    <div *ngIf="loading" class="loading-state"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
+    <div class="table-responsive" *ngIf="!loading">
+      <table class="table-modern">
+        <thead>
+          <tr>
+            <th>ID</th><th>Name</th><th>Email</th><th>Phone</th>
+            <th>Segment</th><th>KYC</th><th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of customers">
+            <td><span class="id-badge">#{{ c.id }}</span></td>
+            <td><div class="name-cell"><div class="name-avatar">{{ c.firstName.charAt(0) }}</div>{{ c.firstName }} {{ c.lastName }}</div></td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.phone }}</td>
+            <td><span class="status-badge badge-info">{{ c.segment }}</span></td>
+            <td>
+              <select class="kyc-select" [value]="c.kycStatus" (change)="updateKyc(c.id, $any($event.target).value)">
+                <option>PENDING</option><option>VERIFIED</option><option>REJECTED</option>
+              </select>
+            </td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(c.status)">{{ c.status }}</span></td>
+            <td>
+              <button class="action-btn" (click)="openEdit(c)" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="customers.length === 0">
+            <td colspan="8" class="empty-state">No customers found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-footer" *ngIf="totalPages > 1">
+      <nav><ul class="pagination mb-0">
+        <li class="page-item" [class.disabled]="currentPage === 0"><a class="page-link" (click)="goPage(currentPage-1)">‹</a></li>
+        <li class="page-item" *ngFor="let p of pages" [class.active]="p === currentPage"><a class="page-link" (click)="goPage(p)">{{ p+1 }}</a></li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages-1"><a class="page-link" (click)="goPage(currentPage+1)">›</a></li>
+      </ul></nav>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal" (click)="showModal=false">
+  <div class="modal-box fade-in" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h5>{{ editMode ? 'Edit Customer' : 'New Customer' }}</h5>
+      <button class="close-btn" (click)="showModal=false"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+      <form (ngSubmit)="save()" #f="ngForm">
+        <div class="form-grid">
+          <div class="mb-3"><label class="form-label">First Name *</label><input class="form-control" [(ngModel)]="form.firstName" name="fn" required></div>
+          <div class="mb-3"><label class="form-label">Last Name *</label><input class="form-control" [(ngModel)]="form.lastName" name="ln" required></div>
+          <div class="mb-3"><label class="form-label">Email *</label><input type="email" class="form-control" [(ngModel)]="form.email" name="em" required></div>
+          <div class="mb-3"><label class="form-label">Phone *</label><input class="form-control" [(ngModel)]="form.phone" name="ph" required></div>
+          <div class="mb-3"><label class="form-label">Date of Birth</label><input type="date" class="form-control" [(ngModel)]="form.dateOfBirth" name="dob"></div>
+          <div class="mb-3"><label class="form-label">Segment</label>
+            <select class="form-select" [(ngModel)]="form.segment" name="seg">
+              <option>RETAIL</option><option>SME</option><option>CORPORATE</option><option>PREMIUM</option>
+            </select>
+          </div>
+          <div class="mb-3"><label class="form-label">PAN Number</label><input class="form-control" [(ngModel)]="form.panNumber" name="pan"></div>
+          <div class="mb-3"><label class="form-label">Aadhar Number</label><input class="form-control" [(ngModel)]="form.aadharNumber" name="aadhar"></div>
+          <div class="mb-3 col-span-2"><label class="form-label">Address</label><input class="form-control" [(ngModel)]="form.address" name="addr"></div>
+          <div class="mb-3"><label class="form-label">City</label><input class="form-control" [(ngModel)]="form.city" name="city"></div>
+          <div class="mb-3"><label class="form-label">State</label><input class="form-control" [(ngModel)]="form.state" name="state"></div>
+          <div class="mb-3"><label class="form-label">PIN Code</label><input class="form-control" [(ngModel)]="form.pinCode" name="pin"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showModal=false">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving || f.invalid">
+            <i class="fa-solid fa-spinner fa-spin me-1" *ngIf="saving"></i>
+            {{ editMode ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

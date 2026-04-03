@@ -1,0 +1,71 @@
+.navbar-top {
+  height: var(--navbar-height);
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+.navbar-left { display: flex; align-items: center; gap: 16px; }
+.menu-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  transition: all .2s;
+}
+.menu-btn:hover { background: var(--body-bg); color: var(--text-primary); }
+.nav-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+
+.navbar-right { display: flex; align-items: center; gap: 16px; }
+.nav-badge {
+  position: relative;
+  width: 36px; height: 36px;
+  background: var(--body-bg);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all .2s;
+}
+.nav-badge:hover { background: var(--primary-light); color: var(--primary); }
+.badge-dot {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 8px; height: 8px;
+  background: var(--danger);
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 6px 6px;
+  background: var(--body-bg);
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.user-chip:hover { background: var(--primary-light); }
+.chip-avatar {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+.chip-info { display: flex; flex-direction: column; }
+.chip-name { font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
+.chip-role { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: .4px; }

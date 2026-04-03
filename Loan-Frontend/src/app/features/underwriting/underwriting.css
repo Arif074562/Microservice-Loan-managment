@@ -1,0 +1,21 @@
+.btn-group-custom { display: flex; gap: 10px; }
+.tabs-bar { display: flex; gap: 4px; margin-bottom: 16px; background: #fff; padding: 6px; border-radius: var(--radius-sm); border: 1px solid var(--border); width: fit-content; }
+.tab-btn { padding: 8px 20px; border: none; background: transparent; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all .2s; }
+.tab-btn.active { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(99,102,241,.3); }
+.search-bar { display: flex; align-items: center; gap: 12px; padding: 16px 20px; margin-bottom: 16px; }
+.id-badge { background: var(--primary-light); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.empty-state { text-align: center; padding: 40px; color: var(--text-secondary); }
+.score-chip { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+.score-chip.good { background: #d1fae5; color: #065f46; }
+.score-chip.fair { background: #fef3c7; color: #92400e; }
+.score-chip.poor { background: #fee2e2; color: #991b1b; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+.modal-box { background: #fff; border-radius: var(--radius); width: 600px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+.modal-header h5 { font-size: 16px; font-weight: 700; }
+.close-btn { background: none; border: none; font-size: 18px; color: var(--text-secondary); cursor: pointer; padding: 4px; border-radius: 6px; }
+.modal-body { padding: 24px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 8px; }
+.btn-outline-secondary { border: 1.5px solid var(--border); color: var(--text-secondary); border-radius: var(--radius-sm); font-weight: 500; padding: 8px 20px; background: transparent; transition: all .2s; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+.col-span-2 { grid-column: span 2; }

@@ -1,0 +1,111 @@
+<div class="fade-in">
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h2>Good day, {{ auth.getCurrentUser()?.name }}! 👋</h2>
+      <p>Here's what's happening with your loan portfolio today.</p>
+    </div>
+    <div class="welcome-graphic">
+      <i class="fa-solid fa-chart-line"></i>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #ede9fe; color: #6366f1;">
+        <i class="fa-solid fa-users"></i>
+      </div>
+      <div>
+        <div class="stat-value">{{ stats.customers }}</div>
+        <div class="stat-label">Total Customers</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #dbeafe; color: #0ea5e9;">
+        <i class="fa-solid fa-file-invoice"></i>
+      </div>
+      <div>
+        <div class="stat-value">{{ stats.applications }}</div>
+        <div class="stat-label">Loan Applications</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #d1fae5; color: #10b981;">
+        <i class="fa-solid fa-box-open"></i>
+      </div>
+      <div>
+        <div class="stat-value">{{ stats.products }}</div>
+        <div class="stat-label">Loan Products</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background: #fef3c7; color: #f59e0b;">
+        <i class="fa-solid fa-rotate"></i>
+      </div>
+      <div>
+        <div class="stat-value">{{ stats.accounts }}</div>
+        <div class="stat-label">Active Accounts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <!-- Recent Applications -->
+    <div class="card p-0">
+      <div class="card-header-custom">
+        <div>
+          <h3 class="card-title">Recent Applications</h3>
+          <p class="card-subtitle">Latest loan application submissions</p>
+        </div>
+        <a routerLink="/loan-applications" class="btn btn-outline-primary btn-sm">View All</a>
+      </div>
+      <div *ngIf="loading" class="loading-state">
+        <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+      </div>
+      <div *ngIf="!loading && recentApplications.length === 0" class="empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No applications yet</p>
+      </div>
+      <table class="table-modern" *ngIf="!loading && recentApplications.length > 0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Tenure</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let app of recentApplications">
+            <td><span class="id-badge">#{{ app.id }}</span></td>
+            <td>{{ app.customerId }}</td>
+            <td>₹{{ app.requestedAmount | number }}</td>
+            <td>{{ app.tenureMonths }} mo</td>
+            <td><span class="status-badge" [ngClass]="getStatusClass(app.status)">{{ app.status }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions-panel">
+      <div class="card-header-custom">
+        <div>
+          <h3 class="card-title">Quick Actions</h3>
+          <p class="card-subtitle">Common tasks at a glance</p>
+        </div>
+      </div>
+      <div class="quick-links-grid">
+        <a *ngFor="let q of quickLinks" [routerLink]="q.route" class="quick-link-card">
+          <div class="ql-icon" [style.background]="q.color + '20'" [style.color]="q.color">
+            <i class="fa-solid {{ q.icon }}"></i>
+          </div>
+          <span>{{ q.label }}</span>
+          <i class="fa-solid fa-arrow-right ql-arrow"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,126 @@
+<div class="fade-in">
+  <div class="page-header">
+    <div><h2 class="page-title">Underwriting</h2><p class="page-subtitle">Credit decisions and risk scoring</p></div>
+    <div class="btn-group-custom">
+      <button class="btn btn-primary" (click)="decisionForm=emptyDecision(); showDecisionModal=true; error=''">
+        <i class="fa-solid fa-gavel me-2"></i>Record Decision
+      </button>
+      <button class="btn btn-outline-primary" (click)="showScoreModal=true; error=''">
+        <i class="fa-solid fa-star me-2"></i>Add Credit Score
+      </button>
+    </div>
+  </div>
+
+  <div class="alert alert-success" *ngIf="success"><i class="fa-solid fa-circle-check me-2"></i>{{ success }}</div>
+
+  <!-- Tabs -->
+  <div class="tabs-bar">
+    <button class="tab-btn" [class.active]="activeTab==='decisions'" (click)="activeTab='decisions'">
+      <i class="fa-solid fa-gavel me-2"></i>Decisions
+    </button>
+    <button class="tab-btn" [class.active]="activeTab==='scores'" (click)="activeTab='scores'">
+      <i class="fa-solid fa-star me-2"></i>Credit Scores
+    </button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-bar card">
+    <input type="number" class="form-control" [(ngModel)]="searchAppId"
+           [placeholder]="activeTab==='decisions' ? 'Search by Application ID...' : 'Search by Customer ID...'"
+           style="max-width:300px">
+    <button class="btn btn-primary" (click)="activeTab==='decisions' ? searchDecisions() : searchScores()">
+      <i class="fa-solid fa-search me-2"></i>Search
+    </button>
+  </div>
+
+  <!-- Decisions Tab -->
+  <div class="card p-0" *ngIf="activeTab==='decisions'">
+    <table class="table-modern">
+      <thead><tr><th>ID</th><th>App ID</th><th>Decision</th><th>Approved Amount</th><th>Rate</th><th>Tenure</th><th>Remarks</th><th>Date</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let d of decisions">
+          <td><span class="id-badge">#{{ d.id }}</span></td>
+          <td>#{{ d.applicationId }}</td>
+          <td><span class="status-badge" [ngClass]="getDecisionClass(d.decisionType)">{{ d.decisionType }}</span></td>
+          <td>₹{{ d.approvedAmount | number }}</td>
+          <td>{{ d.approvedRate }}%</td>
+          <td>{{ d.approvedTenure }} mo</td>
+          <td>{{ d.remarks }}</td>
+          <td>{{ d.decidedAt | date:'mediumDate' }}</td>
+        </tr>
+        <tr *ngIf="decisions.length===0"><td colspan="8" class="empty-state">Search by Application ID to view decisions</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Scores Tab -->
+  <div class="card p-0" *ngIf="activeTab==='scores'">
+    <table class="table-modern">
+      <thead><tr><th>ID</th><th>Customer ID</th><th>Score</th><th>Bureau</th><th>Report Date</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let s of creditScores">
+          <td><span class="id-badge">#{{ s.id }}</span></td>
+          <td>#{{ s.customerId }}</td>
+          <td><span class="score-chip" [class.good]="s.score>=700" [class.fair]="s.score>=600 && s.score<700" [class.poor]="s.score<600">{{ s.score }}</span></td>
+          <td>{{ s.bureau }}</td>
+          <td>{{ s.reportDate | date:'mediumDate' }}</td>
+        </tr>
+        <tr *ngIf="creditScores.length===0"><td colspan="5" class="empty-state">Search by Customer ID to view scores</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Decision Modal -->
+<div class="modal-overlay" *ngIf="showDecisionModal" (click)="showDecisionModal=false">
+  <div class="modal-box fade-in" (click)="$event.stopPropagation()">
+    <div class="modal-header"><h5>Record Underwriting Decision</h5><button class="close-btn" (click)="showDecisionModal=false"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+      <form (ngSubmit)="saveDecision()" #f="ngForm">
+        <div class="form-grid">
+          <div class="mb-3"><label class="form-label">Application ID *</label><input type="number" class="form-control" [(ngModel)]="decisionForm.applicationId" name="aid" required></div>
+          <div class="mb-3"><label class="form-label">Decision Type *</label>
+            <select class="form-select" [(ngModel)]="decisionForm.decisionType" name="dt" required>
+              <option *ngFor="let t of decisionTypes" [value]="t">{{ t }}</option>
+            </select>
+          </div>
+          <div class="mb-3"><label class="form-label">Approved Amount (₹)</label><input type="number" class="form-control" [(ngModel)]="decisionForm.approvedAmount" name="aa"></div>
+          <div class="mb-3"><label class="form-label">Approved Rate (%)</label><input type="number" step="0.01" class="form-control" [(ngModel)]="decisionForm.approvedRate" name="ar"></div>
+          <div class="mb-3"><label class="form-label">Approved Tenure (mo)</label><input type="number" class="form-control" [(ngModel)]="decisionForm.approvedTenure" name="at"></div>
+          <div class="mb-3 col-span-2"><label class="form-label">Remarks</label><textarea class="form-control" rows="2" [(ngModel)]="decisionForm.remarks" name="rem"></textarea></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showDecisionModal=false">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving || f.invalid">
+            <i class="fa-solid fa-spinner fa-spin me-1" *ngIf="saving"></i>Record
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Score Modal -->
+<div class="modal-overlay" *ngIf="showScoreModal" (click)="showScoreModal=false">
+  <div class="modal-box fade-in" (click)="$event.stopPropagation()">
+    <div class="modal-header"><h5>Add Credit Score</h5><button class="close-btn" (click)="showScoreModal=false"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body">
+      <div class="alert alert-danger" *ngIf="error">{{ error }}</div>
+      <form (ngSubmit)="saveScore()" #sf="ngForm">
+        <div class="form-grid">
+          <div class="mb-3"><label class="form-label">Customer ID *</label><input type="number" class="form-control" [(ngModel)]="scoreForm.customerId" name="cid" required></div>
+          <div class="mb-3"><label class="form-label">Score *</label><input type="number" class="form-control" [(ngModel)]="scoreForm.score" name="sc" required></div>
+          <div class="mb-3"><label class="form-label">Bureau *</label><input class="form-control" [(ngModel)]="scoreForm.bureau" name="bur" required></div>
+          <div class="mb-3"><label class="form-label">Report Date *</label><input type="date" class="form-control" [(ngModel)]="scoreForm.reportDate" name="rd" required></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" (click)="showScoreModal=false">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving || sf.invalid">
+            <i class="fa-solid fa-spinner fa-spin me-1" *ngIf="saving"></i>Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

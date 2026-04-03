@@ -1,0 +1,23 @@
+<header class="navbar-top">
+  <div class="navbar-left">
+    <button class="menu-btn" (click)="toggleSidebar.emit()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="page-info">
+      <h1 class="nav-title">{{ pageTitle }}</h1>
+    </div>
+  </div>
+  <div class="navbar-right">
+    <div class="nav-badge">
+      <i class="fa-solid fa-bell"></i>
+      <span class="badge-dot"></span>
+    </div>
+    <div class="user-chip">
+      <div class="chip-avatar">{{ auth.getCurrentUser()?.name?.charAt(0)?.toUpperCase() }}</div>
+      <div class="chip-info">
+        <span class="chip-name">{{ auth.getCurrentUser()?.name }}</span>
+        <span class="chip-role">{{ auth.getCurrentUser()?.role }}</span>
+      </div>
+    </div>
+  </div>
+</header>
